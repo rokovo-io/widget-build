@@ -1,3 +1,4 @@
+// widget.js - WITH PRODUCT CAROUSEL (FIXED)
 (function() {
   'use strict';
 
@@ -471,7 +472,7 @@
           role: 'assistant'
         }]);
       } finally {
-        setIsTyping(false;
+        setIsTyping(false); // FIXED: Added closing parenthesis
         inputRef.current?.focus();
       }
     };
@@ -635,7 +636,7 @@
             )
           ),
 
-          // Navigation Buttons (only show if more than 1 product)
+          // Navigation Buttons
           products.length > 1 && React.createElement(React.Fragment, null,
             React.createElement('button', {
               onClick: prevSlide,
@@ -682,7 +683,7 @@
           )
         ),
 
-        // Dots Navigation (only show if more than 1 product)
+        // Dots Navigation
         products.length > 1 && React.createElement('div', {
           className: 'carousel-dots',
           style: { color: primaryColor }
