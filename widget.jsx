@@ -1,4 +1,4 @@
-// widget.js - WITH PRODUCT CAROUSEL (FIXED)
+// widget.js - WITH INLINE PRODUCT CAROUSEL (FIXED POSITIONING)
 (function() {
   'use strict';
 
@@ -108,6 +108,62 @@
     return products;
   }
 
+  // NEW: Split message into sections with product placeholder
+  function parseMessageSections(message) {
+    const lines = message.split('\n');
+    let sections = [];
+    let currentText = [];
+    let inProductSection = false;
+    let productStartIndex = -1;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Check if this line starts a product listing
+      const isProductLine = line.match(/^(\d+)\.\s+(.+?)\s+-\s+(.+?)(?:\.|\s+-)\s+Price:/i);
+      const isProductMetadata = line.match(/^(?:-\s*)?(?:Link:|Image:)|^\[View Product\]|^https?:\/\//i);
+      
+      if (isProductLine && !inProductSection) {
+        // Start of product section - save previous text
+        if (currentText.length > 0) {
+          sections.push({
+            type: 'text',
+            content: currentText.join('\n').trim()
+          });
+          currentText = [];
+        }
+        inProductSection = true;
+        productStartIndex = i;
+      } else if (inProductSection && !isProductLine && !isProductMetadata && line.length > 0) {
+        // End of product section - add placeholder
+        sections.push({
+          type: 'products',
+          content: '[[PRODUCTS]]'
+        });
+        inProductSection = false;
+        currentText.push(lines[i]);
+      } else if (!inProductSection) {
+        // Regular text
+        currentText.push(lines[i]);
+      }
+    }
+    
+    // Handle remaining content
+    if (inProductSection) {
+      sections.push({
+        type: 'products',
+        content: '[[PRODUCTS]]'
+      });
+    } else if (currentText.length > 0) {
+      sections.push({
+        type: 'text',
+        content: currentText.join('\n').trim()
+      });
+    }
+    
+    return sections;
+  }
+
   function stripProductMarkdown(message) {
     let cleaned = message;
     cleaned = cleaned.replace(/^\d+\.\s+.+?\s+-\s+.+?(?:\s+-\s+Price:|\.\s+Price:)\s+\$?[\d,]+\.?\d*(?:\s*-\s*\$?[\d,]+\.?\d*)?.*$/gim, '');
@@ -184,6 +240,7 @@
         position: relative;
         overflow: hidden;
         border-radius: 12px;
+        margin: 16px 0;
       }
       
       #rokovo-widget-root .carousel-track {
@@ -472,7 +529,7 @@
           role: 'assistant'
         }]);
       } finally {
-        setIsTyping(false); // FIXED: Added closing parenthesis
+        setIsTyping(false);
         inputRef.current?.focus();
       }
     };
@@ -610,75 +667,71 @@
       if (products.length === 0) return null;
 
       return React.createElement('div', {
-        className: 'w-full mt-3'
+        className: 'carousel-container relative',
+        onTouchStart,
+        onTouchMove,
+        onTouchEnd
       },
+        // Carousel Track
         React.createElement('div', {
-          className: 'carousel-container relative',
-          onTouchStart,
-          onTouchMove,
-          onTouchEnd
+          ref: carouselRef,
+          className: 'carousel-track',
+          style: {
+            transform: `translateX(-${currentIndex * 100}%)`
+          }
         },
-          // Carousel Track
-          React.createElement('div', {
-            ref: carouselRef,
-            className: 'carousel-track',
-            style: {
-              transform: `translateX(-${currentIndex * 100}%)`
+          products.map((product, idx) =>
+            React.createElement('div', {
+              key: idx,
+              className: 'carousel-slide'
+            },
+              React.createElement(ProductCard, { product, primaryColor })
+            )
+          )
+        ),
+
+        // Navigation Buttons
+        products.length > 1 && React.createElement(React.Fragment, null,
+          React.createElement('button', {
+            onClick: prevSlide,
+            className: 'carousel-nav-button prev',
+            'aria-label': 'Previous product',
+            style: { 
+              opacity: currentIndex === 0 ? 0.5 : 1,
+              cursor: currentIndex === 0 ? 'default' : 'pointer'
             }
           },
-            products.map((product, idx) =>
-              React.createElement('div', {
-                key: idx,
-                className: 'carousel-slide'
-              },
-                React.createElement(ProductCard, { product, primaryColor })
-              )
+            React.createElement('svg', {
+              className: 'w-5 h-5',
+              fill: 'none',
+              stroke: 'currentColor',
+              viewBox: '0 0 24 24',
+              strokeWidth: '3',
+              strokeLinecap: 'round',
+              strokeLinejoin: 'round'
+            },
+              React.createElement('path', { d: 'M15 18l-6-6 6-6' })
             )
           ),
-
-          // Navigation Buttons
-          products.length > 1 && React.createElement(React.Fragment, null,
-            React.createElement('button', {
-              onClick: prevSlide,
-              className: 'carousel-nav-button prev',
-              'aria-label': 'Previous product',
-              style: { 
-                opacity: currentIndex === 0 ? 0.5 : 1,
-                cursor: currentIndex === 0 ? 'default' : 'pointer'
-              }
+          React.createElement('button', {
+            onClick: nextSlide,
+            className: 'carousel-nav-button next',
+            'aria-label': 'Next product',
+            style: { 
+              opacity: currentIndex === products.length - 1 ? 0.5 : 1,
+              cursor: currentIndex === products.length - 1 ? 'default' : 'pointer'
+            }
+          },
+            React.createElement('svg', {
+              className: 'w-5 h-5',
+              fill: 'none',
+              stroke: 'currentColor',
+              viewBox: '0 0 24 24',
+              strokeWidth: '3',
+              strokeLinecap: 'round',
+              strokeLinejoin: 'round'
             },
-              React.createElement('svg', {
-                className: 'w-5 h-5',
-                fill: 'none',
-                stroke: 'currentColor',
-                viewBox: '0 0 24 24',
-                strokeWidth: '3',
-                strokeLinecap: 'round',
-                strokeLinejoin: 'round'
-              },
-                React.createElement('path', { d: 'M15 18l-6-6 6-6' })
-              )
-            ),
-            React.createElement('button', {
-              onClick: nextSlide,
-              className: 'carousel-nav-button next',
-              'aria-label': 'Next product',
-              style: { 
-                opacity: currentIndex === products.length - 1 ? 0.5 : 1,
-                cursor: currentIndex === products.length - 1 ? 'default' : 'pointer'
-              }
-            },
-              React.createElement('svg', {
-                className: 'w-5 h-5',
-                fill: 'none',
-                stroke: 'currentColor',
-                viewBox: '0 0 24 24',
-                strokeWidth: '3',
-                strokeLinecap: 'round',
-                strokeLinejoin: 'round'
-              },
-                React.createElement('path', { d: 'M9 18l6-6-6-6' })
-              )
+              React.createElement('path', { d: 'M9 18l6-6-6-6' })
             )
           )
         ),
@@ -704,20 +757,23 @@
           className: 'text-center mt-2'
         },
           React.createElement('span', {
-            className: 'text-gray-500 text-xs'
+            className: 'text-gray-400 text-xs font-medium'
           }, `${currentIndex + 1} of ${products.length} products`)
         )
       );
     });
 
-    // Message Component
+    // Message Component with Inline Products
     const Message = React.memo(({ message, index, primaryColor, isMobile }) => {
       const products = useMemo(() => {
         return message.role === 'assistant' ? parseProducts(message.content) : [];
       }, [message.content, message.role]);
       
-      const textContent = useMemo(() => {
-        return products.length > 0 ? stripProductMarkdown(message.content) : message.content;
+      const sections = useMemo(() => {
+        if (products.length === 0) {
+          return [{ type: 'text', content: message.content }];
+        }
+        return parseMessageSections(message.content);
       }, [message.content, products.length]);
 
       return React.createElement('div', {
@@ -764,12 +820,21 @@
               lineHeight: '1.6'
             }
           },
-            textContent && React.createElement('div', {
-              style: { whiteSpace: 'pre-wrap', wordBreak: 'break-word' }
-            }, textContent),
-            products.length > 0 && React.createElement(ProductCarousel, {
-              products,
-              primaryColor
+            // Render sections with inline products
+            sections.map((section, idx) => {
+              if (section.type === 'text' && section.content) {
+                return React.createElement('div', {
+                  key: `text-${idx}`,
+                  style: { whiteSpace: 'pre-wrap', wordBreak: 'break-word' }
+                }, section.content);
+              } else if (section.type === 'products' && products.length > 0) {
+                return React.createElement(ProductCarousel, {
+                  key: `products-${idx}`,
+                  products,
+                  primaryColor
+                });
+              }
+              return null;
             })
           )
         )
