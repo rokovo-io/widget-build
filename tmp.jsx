@@ -4,7 +4,7 @@
 
   const WIDGET_SCRIPT = document.currentScript;
 
-  // Inject Tailwind and dependencies
+  // Inject React dependencies
   function loadDependencies() {
     return new Promise((resolve) => {
       let loaded = 0;
@@ -33,13 +33,6 @@
         checkLoaded();
       }
     });
-  }
-
-  function loadTailwind() {
-    if (document.querySelector('script[src*="tailwindcss"]')) return;
-    const tailwindScript = document.createElement('script');
-    tailwindScript.src = 'https://cdn.tailwindcss.com';
-    document.head.appendChild(tailwindScript);
   }
 
   // Product Parser
@@ -173,186 +166,368 @@
     const styles = document.createElement('style');
     styles.id = 'rokovo-widget-styles';
     styles.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
       #rokovo-widget-root {
-        --background: #ffffff;
-        --foreground: #0f172a;
-        --card: #ffffff;
-        --card-foreground: #0f172a;
-        --popover: #ffffff;
-        --popover-foreground: #0f172a;
-        --muted: #f1f5f9;
-        --muted-foreground: #64748b;
-        --border: #e2e8f0;
-        --input: #e2e8f0;
-        --ring: #94a3b8;
-        --primary: #0f172a;
-        --primary-foreground: #f8fafc;
-        --secondary: #f8fafc;
-        --secondary-foreground: #0f172a;
-        --accent: #f1f5f9;
-        --accent-foreground: #0f172a;
-        --destructive: #ef4444;
-        --radius: 0.75rem;
-        color: var(--foreground);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+        color: #09090b;
       }
 
       #rokovo-widget-root * {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         box-sizing: border-box;
       }
 
-      #rokovo-widget-root .bg-background { background-color: var(--background); }
-      #rokovo-widget-root .text-foreground { color: var(--foreground); }
-      #rokovo-widget-root .bg-card { background-color: var(--card); }
-      #rokovo-widget-root .text-card-foreground { color: var(--card-foreground); }
-      #rokovo-widget-root .bg-muted { background-color: var(--muted); }
-      #rokovo-widget-root .text-muted-foreground { color: var(--muted-foreground); }
-      #rokovo-widget-root .border-border { border-color: var(--border); }
-      #rokovo-widget-root .border-input { border-color: var(--input); }
-      #rokovo-widget-root .bg-primary { background-color: var(--primary); }
-      #rokovo-widget-root .text-primary { color: var(--primary); }
-      #rokovo-widget-root .text-primary-foreground { color: var(--primary-foreground); }
-      #rokovo-widget-root .bg-secondary { background-color: var(--secondary); }
-      #rokovo-widget-root .text-secondary-foreground { color: var(--secondary-foreground); }
-      #rokovo-widget-root .bg-accent { background-color: var(--accent); }
-      #rokovo-widget-root .text-accent-foreground { color: var(--accent-foreground); }
-      #rokovo-widget-root .text-destructive { color: var(--destructive); }
-      #rokovo-widget-root .bg-destructive { background-color: var(--destructive); }
-      #rokovo-widget-root .ring-ring { --tw-ring-color: var(--ring); }
-      #rokovo-widget-root .ring-offset-background { --tw-ring-offset-color: var(--background); }
-      #rokovo-widget-root .rounded-theme { border-radius: var(--radius); }
-      #rokovo-widget-root .bg-muted-soft { background-color: rgba(241, 245, 249, 0.8); }
-      #rokovo-widget-root .hover\\:bg-accent:hover { background-color: var(--accent); }
-      #rokovo-widget-root .hover\\:text-accent-foreground:hover { color: var(--accent-foreground); }
-      #rokovo-widget-root .hover\\:text-foreground:hover { color: var(--foreground); }
-      #rokovo-widget-root .placeholder\\:text-muted-foreground::placeholder { color: var(--muted-foreground); }
-
-      #rokovo-widget-root .chat-bubble {
-        border-radius: var(--radius) !important;
+      #rokovo-widget-root .rk-text-muted {
+        color: #71717a;
       }
 
-      #rokovo-widget-root .chat-bubble-user {
-        border-radius: var(--radius) !important;
-        border-bottom-right-radius: calc(var(--radius) / 2) !important;
+      #rokovo-widget-root .rk-text-subtle {
+        color: #a1a1aa;
       }
 
-      #rokovo-widget-root .chat-bubble-assistant {
-        border-radius: var(--radius) !important;
-        border-bottom-left-radius: calc(var(--radius) / 2) !important;
-      }
-
-      #rokovo-widget-root .product-card {
-        border-radius: calc(var(--radius) - 0.125rem) !important;
-        overflow: hidden;
-      }
-
-      #rokovo-widget-root .line-clamp-2 {
+      #rokovo-widget-root .rk-line-clamp-2 {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
 
-      #rokovo-widget-root .scrollbar-thin::-webkit-scrollbar {
-        width: 6px;
+      #rokovo-widget-root .rk-scrollbar::-webkit-scrollbar {
+        width: 8px;
       }
 
-      #rokovo-widget-root .scrollbar-thin::-webkit-scrollbar-track {
-        background: var(--muted);
-        border-radius: 3px;
+      #rokovo-widget-root .rk-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
       }
 
-      #rokovo-widget-root .scrollbar-thin::-webkit-scrollbar-thumb {
-        background: rgba(100, 116, 139, 0.4);
-        border-radius: 3px;
+      #rokovo-widget-root .rk-scrollbar::-webkit-scrollbar-thumb {
+        background: #e4e4e7;
+        border-radius: 999px;
       }
 
-      #rokovo-widget-root .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-        background: rgba(100, 116, 139, 0.6);
+      #rokovo-widget-root .rk-card {
+        background: #ffffff;
+        border: 1px solid #e4e4e7;
+        border-radius: 12px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+
+      #rokovo-widget-root .rk-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 20px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1px solid #e4e4e7;
+        background: #f4f4f5;
+        color: #52525b;
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+
+      #rokovo-widget-root .rk-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        height: 36px;
+        padding: 0 14px;
+        border-radius: 8px;
+        border: 1px solid #e4e4e7;
+        background: #ffffff;
+        color: #18181b;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s, transform 0.1s, box-shadow 0.2s;
+      }
+
+      #rokovo-widget-root .rk-button:hover:not(:disabled) {
+        background: #f4f4f5;
+      }
+
+      #rokovo-widget-root .rk-button:active:not(:disabled) {
+        transform: translateY(1px);
+      }
+
+      #rokovo-widget-root .rk-button:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #18181b;
+      }
+
+      #rokovo-widget-root .rk-button-primary {
+        border-color: #18181b;
+        background: #18181b;
+        color: #fafafa;
+      }
+
+      #rokovo-widget-root .rk-button-primary:hover:not(:disabled) {
+        background: #0f0f11;
+      }
+
+      #rokovo-widget-root .rk-button-ghost {
+        border-color: transparent;
+        background: transparent;
+      }
+
+      #rokovo-widget-root .rk-button-ghost:hover:not(:disabled) {
+        background: #f4f4f5;
+      }
+
+      #rokovo-widget-root .rk-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      #rokovo-widget-root .rk-input {
+        width: 100%;
+        height: 40px;
+        border-radius: 10px;
+        border: 1px solid #e4e4e7;
+        background: #ffffff;
+        padding: 0 12px;
+        font-size: 14px;
+        color: #18181b;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      #rokovo-widget-root .rk-input::placeholder {
+        color: #a1a1aa;
+      }
+
+      #rokovo-widget-root .rk-input:focus {
+        outline: none;
+        border-color: #18181b;
+        box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.12);
+      }
+
+      #rokovo-widget-root .rk-fab {
+        width: 56px;
+        height: 56px;
+        border-radius: 999px;
+        box-shadow: 0 12px 32px rgba(24, 24, 27, 0.25);
+      }
+
+      #rokovo-widget-root .rk-panel {
+        background: #ffffff;
+        border: 1px solid #e4e4e7;
+        border-radius: 20px;
+        box-shadow: 0 24px 64px rgba(24, 24, 27, 0.2);
+        overflow: hidden;
+      }
+
+      #rokovo-widget-root .rk-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 18px;
+        border-bottom: 1px solid #f4f4f5;
+        background: #fafafa;
+      }
+
+      #rokovo-widget-root .rk-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: #18181b;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #fafafa;
+      }
+
+      #rokovo-widget-root .rk-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+      }
+
+      #rokovo-widget-root .rk-messages {
+        padding: 18px;
+        overflow-y: auto;
+      }
+
+      #rokovo-widget-root .rk-bubble {
+        padding: 10px 12px;
+        border-radius: 16px;
+        border: 1px solid #e4e4e7;
+        background: #f4f4f5;
+        color: #18181b;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      #rokovo-widget-root .rk-bubble-user {
+        border-color: #18181b;
+        background: #18181b;
+        color: #fafafa;
+      }
+
+      #rokovo-widget-root .rk-bubble-wrap {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      #rokovo-widget-root .rk-message-column {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      #rokovo-widget-root .rk-footer {
+        border-top: 1px solid #f4f4f5;
+        padding: 10px 14px;
+        text-align: center;
+        background: #fafafa;
+      }
+
+      #rokovo-widget-root .rk-input-row {
+        display: flex;
+        gap: 10px;
+        padding: 14px 18px 16px;
+        border-top: 1px solid #f4f4f5;
+        background: #ffffff;
+      }
+
+      #rokovo-widget-root .rk-product-card {
+        overflow: hidden;
+      }
+
+      #rokovo-widget-root .rk-product-image {
+        position: relative;
+        width: 100%;
+        padding-bottom: 100%;
+        background: #f4f4f5;
+      }
+
+      #rokovo-widget-root .rk-product-image img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      #rokovo-widget-root .rk-product-body {
+        padding: 14px 16px 16px;
+      }
+
+      #rokovo-widget-root .rk-product-title {
+        font-weight: 600;
+        font-size: 15px;
+        margin: 0 0 6px;
+      }
+
+      #rokovo-widget-root .rk-product-desc {
+        font-size: 13px;
+        color: #71717a;
+        margin: 0 0 12px;
+      }
+
+      #rokovo-widget-root .rk-product-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid #f4f4f5;
+        padding-top: 12px;
+      }
+
+      #rokovo-widget-root .rk-product-price {
+        font-size: 18px;
+        font-weight: 600;
+        color: #18181b;
       }
 
       /* Carousel Styles */
-      #rokovo-widget-root .carousel-container {
+      #rokovo-widget-root .rk-carousel {
         position: relative;
-        overflow: hidden;
-        border-radius: calc(var(--radius) - 0.125rem);
         margin: 16px 0;
+        overflow: hidden;
+        border-radius: 12px;
       }
 
-      #rokovo-widget-root .carousel-track {
+      #rokovo-widget-root .rk-carousel-track {
         display: flex;
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         will-change: transform;
       }
 
-      #rokovo-widget-root .carousel-slide {
+      #rokovo-widget-root .rk-carousel-slide {
         flex-shrink: 0;
         width: 100%;
         padding: 0 4px;
       }
 
-      #rokovo-widget-root .carousel-nav-button {
+      #rokovo-widget-root .rk-carousel-nav {
         position: absolute;
         top: 50%;
         transform: translateY(-50%);
-        background: rgba(255, 255, 255, 0.9);
-        border: 1px solid var(--border);
-        color: var(--foreground);
         width: 32px;
         height: 32px;
-        border-radius: 50%;
-        display: flex;
+        border-radius: 999px;
+        background: #ffffff;
+        border: 1px solid #e4e4e7;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.2s;
-        z-index: 10;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+        box-shadow: 0 6px 16px rgba(24, 24, 27, 0.15);
+        transition: transform 0.2s, opacity 0.2s;
+        z-index: 2;
       }
 
-      #rokovo-widget-root .carousel-nav-button:hover {
-        background: var(--background);
+      #rokovo-widget-root .rk-carousel-nav:hover {
         transform: translateY(-50%) scale(1.05);
       }
 
-      #rokovo-widget-root .carousel-nav-button:active {
-        transform: translateY(-50%) scale(0.95);
-      }
-
-      #rokovo-widget-root .carousel-nav-button.prev {
+      #rokovo-widget-root .rk-carousel-nav.prev {
         left: 8px;
       }
 
-      #rokovo-widget-root .carousel-nav-button.next {
+      #rokovo-widget-root .rk-carousel-nav.next {
         right: 8px;
       }
 
-      #rokovo-widget-root .carousel-dots {
+      #rokovo-widget-root .rk-carousel-dots {
         display: flex;
         justify-content: center;
         gap: 6px;
-        margin-top: 12px;
+        margin-top: 10px;
       }
 
-      #rokovo-widget-root .carousel-dot {
+      #rokovo-widget-root .rk-carousel-dot {
         width: 6px;
         height: 6px;
-        border-radius: 50%;
-        background: rgba(100, 116, 139, 0.5);
+        border-radius: 999px;
+        background: #d4d4d8;
+        border: none;
         cursor: pointer;
-        transition: all 0.3s;
+        transition: all 0.2s;
       }
 
-      #rokovo-widget-root .carousel-dot.active {
-        width: 20px;
-        border-radius: 3px;
-        background: var(--primary);
+      #rokovo-widget-root .rk-carousel-dot.active {
+        width: 18px;
+        border-radius: 999px;
+        background: #18181b;
       }
 
-      #rokovo-widget-root .carousel-dot:hover:not(.active) {
-        background: rgba(100, 116, 139, 0.8);
+      #rokovo-widget-root .rk-loader {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        border: 3px solid #e4e4e7;
+        border-top-color: #18181b;
+        border-right-color: #18181b;
+        animation: rk-spin 0.8s linear infinite;
+      }
+
+      @keyframes rk-spin {
+        to {
+          transform: rotate(360deg);
+        }
       }
 
       @keyframes rokovo-bounce {
@@ -404,29 +579,12 @@
         animation: rokovo-slide-up 0.3s ease-out;
       }
 
-      #rokovo-widget-root .product-card {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      #rokovo-widget-root .product-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 12px 24px -12px rgba(15, 23, 42, 0.2);
-      }
-
-      #rokovo-widget-root .product-card img {
-        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
-
-      #rokovo-widget-root .product-card:hover img {
-        transform: scale(1.05);
-      }
-
       body.rokovo-chat-open {
         overflow: hidden;
       }
 
       @media (max-width: 640px) {
-        #rokovo-widget-root .mobile-fullscreen {
+        #rokovo-widget-root .rk-mobile-fullscreen {
           position: fixed !important;
           top: 0 !important;
           left: 0 !important;
@@ -585,25 +743,23 @@
         href: product.link,
         target: '_blank',
         rel: 'noopener noreferrer',
-        className: 'product-card block bg-card text-card-foreground border border-border shadow-sm animate-fade-in',
-        style: { textDecoration: 'none' }
+        className: 'rk-card rk-product-card animate-fade-in',
+        style: { textDecoration: 'none', color: 'inherit' }
       },
         product.image && React.createElement('div', {
-          className: 'w-full bg-muted relative overflow-hidden',
-          style: { paddingBottom: '100%' }
+          className: 'rk-product-image'
         },
           React.createElement('img', {
             src: product.image,
             alt: product.name,
-            className: 'absolute inset-0 w-full h-full object-cover',
             loading: 'lazy',
             onError: (e) => {
               e.target.style.display = 'none';
               const parent = e.target.parentElement;
               if (parent) {
                 parent.innerHTML = `
-                  <div class="absolute inset-0 flex items-center justify-center bg-muted">
-                    <svg class="w-12 h-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#a1a1aa;">
+                    <svg width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
@@ -612,43 +768,28 @@
             }
           })
         ),
-        React.createElement('div', { className: 'p-4' },
-          React.createElement('h4', {
-            className: 'text-foreground font-semibold text-base mb-2 line-clamp-2',
-            style: { minHeight: '3rem', lineHeight: '1.5rem' }
-          }, product.name),
+        React.createElement('div', { className: 'rk-product-body' },
+          React.createElement('h4', { className: 'rk-product-title rk-line-clamp-2' }, product.name),
           product.description && React.createElement('p', {
-            className: 'text-muted-foreground text-sm mb-3 line-clamp-2',
-            style: { minHeight: '2.5rem', lineHeight: '1.25rem' }
+            className: 'rk-product-desc rk-line-clamp-2'
           }, product.description),
-          React.createElement('div', {
-            className: 'flex items-center justify-between mt-3 pt-3 border-t border-border'
-          },
-            React.createElement('div', {
-              className: 'flex flex-col'
-            },
-              React.createElement('span', {
-                className: 'text-muted-foreground text-xs mb-1'
-              }, 'Price'),
-              React.createElement('p', {
-                className: 'font-semibold text-xl text-primary'
-              }, `$${product.price}`)
+          React.createElement('div', { className: 'rk-product-meta' },
+            React.createElement('div', null,
+              React.createElement('div', { className: 'rk-text-subtle', style: { fontSize: '12px' } }, 'Price'),
+              React.createElement('div', { className: 'rk-product-price' }, `$${product.price}`)
             ),
-            React.createElement('div', {
-              className: 'inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-md border border-input bg-secondary text-secondary-foreground transition-colors hover:bg-accent hover:text-accent-foreground'
-            },
+            React.createElement('span', { className: 'rk-button rk-button-ghost', style: { height: '32px' } },
               React.createElement('span', null, 'View Details'),
               React.createElement('svg', {
-                className: 'w-4 h-4',
+                width: '14',
+                height: '14',
                 fill: 'none',
                 stroke: 'currentColor',
                 viewBox: '0 0 24 24',
-                strokeWidth: '2.5',
+                strokeWidth: '2',
                 strokeLinecap: 'round',
                 strokeLinejoin: 'round'
-              },
-                React.createElement('path', { d: 'M5 12h14M12 5l7 7-7 7' })
-              )
+              }, React.createElement('path', { d: 'M5 12h14M12 5l7 7-7 7' }))
             )
           )
         )
@@ -699,7 +840,7 @@
       if (products.length === 0) return null;
 
       return React.createElement('div', {
-        className: 'carousel-container relative',
+        className: 'rk-carousel',
         onTouchStart,
         onTouchMove,
         onTouchEnd
@@ -707,7 +848,7 @@
         // Carousel Track
         React.createElement('div', {
           ref: carouselRef,
-          className: 'carousel-track',
+          className: 'rk-carousel-track',
           style: {
             transform: `translateX(-${currentIndex * 100}%)`
           }
@@ -715,7 +856,7 @@
           products.map((product, idx) =>
             React.createElement('div', {
               key: idx,
-              className: 'carousel-slide'
+              className: 'rk-carousel-slide'
             },
               React.createElement(ProductCard, { product })
             )
@@ -726,7 +867,7 @@
         products.length > 1 && React.createElement(React.Fragment, null,
           React.createElement('button', {
             onClick: prevSlide,
-            className: 'carousel-nav-button prev',
+            className: 'rk-carousel-nav prev',
             'aria-label': 'Previous product',
             style: {
               opacity: currentIndex === 0 ? 0.5 : 1,
@@ -734,11 +875,10 @@
             }
           },
             React.createElement('svg', {
-              className: 'w-5 h-5',
               fill: 'none',
               stroke: 'currentColor',
               viewBox: '0 0 24 24',
-              strokeWidth: '3',
+              strokeWidth: '2.5',
               strokeLinecap: 'round',
               strokeLinejoin: 'round'
             },
@@ -747,7 +887,7 @@
           ),
           React.createElement('button', {
             onClick: nextSlide,
-            className: 'carousel-nav-button next',
+            className: 'rk-carousel-nav next',
             'aria-label': 'Next product',
             style: {
               opacity: currentIndex === products.length - 1 ? 0.5 : 1,
@@ -755,11 +895,10 @@
             }
           },
             React.createElement('svg', {
-              className: 'w-5 h-5',
               fill: 'none',
               stroke: 'currentColor',
               viewBox: '0 0 24 24',
-              strokeWidth: '3',
+              strokeWidth: '2.5',
               strokeLinecap: 'round',
               strokeLinejoin: 'round'
             },
@@ -770,13 +909,13 @@
 
         // Dots Navigation
         products.length > 1 && React.createElement('div', {
-          className: 'carousel-dots'
+          className: 'rk-carousel-dots'
         },
           products.map((_, idx) =>
             React.createElement('button', {
               key: idx,
               onClick: () => goToSlide(idx),
-              className: `carousel-dot ${idx === currentIndex ? 'active' : ''}`,
+              className: `rk-carousel-dot ${idx === currentIndex ? 'active' : ''}`,
               'aria-label': `Go to product ${idx + 1}`
             })
           )
@@ -784,17 +923,16 @@
 
         // Product Counter
         products.length > 1 && React.createElement('div', {
-          className: 'text-center mt-2'
+          className: 'rk-text-subtle',
+          style: { textAlign: 'center', marginTop: '6px', fontSize: '12px' }
         },
-          React.createElement('span', {
-            className: 'text-muted-foreground text-xs font-medium'
-          }, `${currentIndex + 1} of ${products.length} products`)
+          React.createElement('span', null, `${currentIndex + 1} of ${products.length} products`)
         )
       );
     });
 
     // FIXED: Message Component with proper inline rendering
-    const Message = React.memo(({ message, index, isMobile }) => {
+    const Message = React.memo(({ message, index }) => {
       const products = useMemo(() => {
         return message.role === 'assistant' ? parseProducts(message.content) : [];
       }, [message.content, message.role]);
@@ -807,19 +945,22 @@
       }, [message.content, products.length]);
 
       return React.createElement('div', {
-        className: `flex gap-3 mb-4 animate-slide-up ${message.role === 'user' ? 'justify-end' : 'items-start'}`,
-        style: { animationDelay: `${index * 0.05}s` }
+        className: 'rk-bubble-wrap animate-slide-up',
+        style: {
+          justifyContent: message.role === 'user' ? 'flex-end' : 'flex-start',
+          alignItems: message.role === 'user' ? 'flex-end' : 'flex-start',
+          animationDelay: `${index * 0.05}s`
+        }
       },
         message.role === 'assistant' && React.createElement('div', {
-          className: 'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-secondary border border-border shadow-sm'
+          className: 'rk-avatar'
         },
           React.createElement('svg', {
-            width: '18',
-            height: '18',
+            width: '20',
+            height: '20',
             viewBox: '0 0 24 24',
             fill: 'none',
             stroke: 'currentColor',
-            className: 'text-primary',
             strokeWidth: '2',
             strokeLinecap: 'round',
             strokeLinejoin: 'round'
@@ -830,11 +971,11 @@
           )
         ),
         React.createElement('div', {
-          className: `flex flex-col ${message.role === 'user' ? 'max-w-[80%]' : 'max-w-[90%]'}`
+          className: 'rk-message-column',
+          style: { maxWidth: message.role === 'user' ? '80%' : '90%' }
         },
           React.createElement('div', {
-            className: `chat-bubble ${message.role === 'user' ? 'chat-bubble-user bg-primary text-primary-foreground' : 'chat-bubble-assistant bg-muted text-foreground border border-border'} px-4 py-3 shadow-sm`,
-            style: { fontSize: '14px', lineHeight: '1.6' }
+            className: `rk-bubble ${message.role === 'user' ? 'rk-bubble-user' : ''}`
           },
             // Text before products
             parsedContent.before && React.createElement('div', {
@@ -858,18 +999,18 @@
     // Typing Indicator
     const TypingIndicator = React.memo(({ agentName }) => (
       React.createElement('div', {
-        className: 'flex gap-3 items-start mb-4 animate-fade-in'
+        className: 'rk-bubble-wrap animate-fade-in',
+        style: { alignItems: 'flex-start' }
       },
         React.createElement('div', {
-          className: 'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-secondary border border-border shadow-sm'
+          className: 'rk-avatar'
         },
           React.createElement('svg', {
-            width: '18',
-            height: '18',
+            width: '20',
+            height: '20',
             viewBox: '0 0 24 24',
             fill: 'none',
             stroke: 'currentColor',
-            className: 'text-primary',
             strokeWidth: '2',
             strokeLinecap: 'round',
             strokeLinejoin: 'round'
@@ -879,25 +1020,25 @@
           )
         ),
         React.createElement('div', {
-          className: 'chat-bubble chat-bubble-assistant px-4 py-3 flex items-center gap-3 shadow-sm bg-muted text-foreground border border-border'
+          className: 'rk-bubble',
+          style: { display: 'flex', alignItems: 'center', gap: '10px' }
         },
           React.createElement('span', {
-            className: 'text-muted-foreground text-sm'
+            className: 'rk-text-muted',
+            style: { fontSize: '13px' }
           }, `${agentName} is typing`),
           React.createElement('div', {
-            className: 'flex gap-1 animate-typing'
+            className: 'animate-typing',
+            style: { display: 'flex', gap: '4px' }
           },
             React.createElement('span', {
-              className: 'w-1.5 h-1.5 rounded-full',
-              style: { background: 'var(--primary)' }
+              style: { width: '6px', height: '6px', borderRadius: '999px', background: '#18181b' }
             }),
             React.createElement('span', {
-              className: 'w-1.5 h-1.5 rounded-full',
-              style: { background: 'var(--primary)' }
+              style: { width: '6px', height: '6px', borderRadius: '999px', background: '#18181b' }
             }),
             React.createElement('span', {
-              className: 'w-1.5 h-1.5 rounded-full',
-              style: { background: 'var(--primary)' }
+              style: { width: '6px', height: '6px', borderRadius: '999px', background: '#18181b' }
             })
           )
         )
@@ -910,40 +1051,44 @@
           key: msg.id,
           message: msg,
           index: idx,
-          isMobile
         })
       )
-    ), [messages, isMobile]);
+    ), [messages]);
 
     return React.createElement('div', {
       id: 'rokovo-widget-root',
-      className: 'fixed bottom-6 right-6 z-[999999]',
       style: {
-        fontFamily: 'Inter, system-ui, sans-serif',
-        '--primary': config.primaryColor,
-        '--ring': config.primaryColor,
-        '--primary-foreground': '#ffffff'
+        position: 'fixed',
+        bottom: '24px',
+        right: '24px',
+        zIndex: 999999
       }
     },
       // Toggle Button
       React.createElement('button', {
         onClick: toggleChat,
-        className: 'relative w-16 h-16 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 bg-primary text-primary-foreground border border-border ring-ring ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+        className: 'rk-button rk-button-primary rk-fab',
         'aria-label': isOpen ? 'Close chat' : 'Open chat',
         'aria-expanded': isOpen
       },
         React.createElement('div', {
-          className: 'relative w-full h-full flex items-center justify-center'
+          style: { position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }
         },
           React.createElement('div', {
-            className: 'absolute inset-0 flex items-center justify-center transition-all duration-300',
             style: {
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.3s',
               transform: isOpen ? 'rotate(90deg) scale(0)' : 'rotate(0) scale(1)',
               opacity: isOpen ? 0 : 1
             }
           },
             React.createElement('svg', {
-              className: 'w-8 h-8 text-primary-foreground',
+              width: '24',
+              height: '24',
               fill: 'currentColor',
               viewBox: '0 0 24 24'
             },
@@ -953,14 +1098,20 @@
             )
           ),
           React.createElement('div', {
-            className: 'absolute inset-0 flex items-center justify-center transition-all duration-300',
             style: {
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.3s',
               transform: isOpen ? 'rotate(0) scale(1)' : 'rotate(-90deg) scale(0)',
               opacity: isOpen ? 1 : 0
             }
           },
             React.createElement('svg', {
-              className: 'w-8 h-8 text-primary-foreground',
+              width: '24',
+              height: '24',
               fill: 'none',
               stroke: 'currentColor',
               viewBox: '0 0 24 24',
@@ -976,26 +1127,24 @@
 
       // Chat Window
       isOpen && React.createElement('div', {
-        className: `absolute bottom-20 right-0 bg-background text-foreground shadow-2xl border border-border flex flex-col overflow-hidden animate-slide-up ${isMobile ? 'mobile-fullscreen' : ''}`,
+        className: `rk-panel animate-slide-up ${isMobile ? 'rk-mobile-fullscreen' : ''}`,
         style: isMobile ? {
           borderRadius: '0'
         } : {
           width: '420px',
           height: '680px',
           maxWidth: 'calc(100vw - 3rem)',
-          maxHeight: 'calc(100vh - 140px)',
-          borderRadius: '24px'
+          maxHeight: 'calc(100vh - 140px)'
         }
       },
         // Header
         React.createElement('div', {
-          className: 'border-b border-border p-5 flex items-center gap-3 bg-muted'
+          className: 'rk-header'
         },
-          React.createElement('div', {
-            className: 'w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary text-primary-foreground shadow-sm'
-          },
+          React.createElement('div', { className: 'rk-avatar' },
             React.createElement('svg', {
-              className: 'w-6 h-6 text-primary-foreground',
+              width: '20',
+              height: '20',
               fill: 'currentColor',
               viewBox: '0 0 24 24'
             },
@@ -1004,28 +1153,28 @@
               })
             )
           ),
-          React.createElement('div', { className: 'flex-1 min-w-0' },
+          React.createElement('div', { style: { flex: 1, minWidth: 0 } },
             React.createElement('h3', {
-              className: 'text-foreground font-semibold text-base truncate'
+              style: { fontSize: '15px', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
             }, config.agentName),
             React.createElement('div', {
-              className: 'flex items-center gap-2 mt-0.5'
+              style: { display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }
             },
-              React.createElement('div', {
-                className: 'w-2 h-2 bg-green-500 rounded-full animate-pulse-slow'
-              }),
+              React.createElement('div', { className: 'rk-status-dot animate-pulse-slow' }),
               React.createElement('span', {
-                className: 'text-muted-foreground text-xs'
+                className: 'rk-text-muted',
+                style: { fontSize: '12px' }
               }, 'Online')
             )
           ),
           !isMobile && React.createElement('button', {
             onClick: toggleChat,
-            className: 'text-muted-foreground hover:text-foreground p-2 rounded-md hover:bg-accent transition-colors ring-ring ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+            className: 'rk-button rk-button-ghost',
             'aria-label': 'Close chat'
           },
             React.createElement('svg', {
-              className: 'w-5 h-5',
+              width: '18',
+              height: '18',
               fill: 'none',
               stroke: 'currentColor',
               viewBox: '0 0 24 24',
@@ -1040,32 +1189,24 @@
 
         // Messages
         React.createElement('div', {
-          className: 'flex-1 overflow-y-auto p-5 scrollbar-thin bg-background',
+          className: 'rk-messages rk-scrollbar',
           style: { minHeight: 0 }
         },
           isLoading ?
             React.createElement('div', {
-              className: 'flex flex-col items-center justify-center h-full text-muted-foreground'
+              style: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '12px' }
             },
-              React.createElement('div', {
-                className: 'w-14 h-14 border-4 border-border rounded-full animate-spin mb-4',
-                style: {
-                  borderTopColor: 'var(--primary)',
-                  borderRightColor: 'var(--primary)'
-                }
-              }),
-              React.createElement('p', { className: 'text-sm font-medium' }, 'Connecting...')
+              React.createElement('div', { className: 'rk-loader' }),
+              React.createElement('p', { className: 'rk-text-muted', style: { fontSize: '13px', fontWeight: 500 } }, 'Connecting...')
             )
           : error ?
             React.createElement('div', {
-              className: 'flex flex-col items-center justify-center h-full text-center px-8'
+              style: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', padding: '0 24px', gap: '12px' }
             },
-              React.createElement('div', {
-                className: 'w-16 h-16 bg-destructive rounded-full flex items-center justify-center mb-4',
-                style: { backgroundColor: 'rgba(239, 68, 68, 0.12)' }
-              },
+              React.createElement('div', { className: 'rk-badge', style: { height: '36px', padding: '0 12px', background: '#fef2f2', borderColor: '#fecaca', color: '#b91c1c' } },
                 React.createElement('svg', {
-                  className: 'w-8 h-8 text-destructive',
+                  width: '18',
+                  height: '18',
                   fill: 'none',
                   stroke: 'currentColor',
                   viewBox: '0 0 24 24',
@@ -1079,11 +1220,11 @@
                 )
               ),
               React.createElement('p', {
-                className: 'text-destructive text-sm mb-4 font-medium'
+                style: { color: '#b91c1c', fontSize: '13px', fontWeight: 500, margin: 0 }
               }, error),
               React.createElement('button', {
                 onClick: initSession,
-                className: 'px-6 py-3 rounded-md bg-primary text-primary-foreground text-sm font-medium transition-all hover:shadow-md active:scale-95 ring-ring ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'
+                className: 'rk-button rk-button-primary'
               }, 'Try Again')
             )
           :
@@ -1098,69 +1239,58 @@
 
         // Input
         React.createElement('div', {
-          className: 'border-t border-border p-4 bg-background'
+          className: 'rk-input-row'
         },
-          React.createElement('div', {
-            className: 'flex gap-2'
-          },
-            React.createElement('input', {
-              ref: inputRef,
-              type: 'text',
-              value: input,
-              onChange: (e) => setInput(e.target.value),
-              onKeyPress: (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  sendMessage();
-                }
-              },
-              placeholder: 'Type your message...',
-              disabled: isLoading || !sessionId || error,
-              className: 'flex-1 bg-background border border-input px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-offset-2 ring-ring ring-offset-background transition-all disabled:opacity-50 disabled:cursor-not-allowed',
-              style: {
-                fontSize: '14px',
-                borderRadius: '10px'
-              }
-            }),
-            React.createElement('button', {
-              onClick: sendMessage,
-              disabled: !input.trim() || isTyping || isLoading || !sessionId || error,
-              className: 'bg-primary text-primary-foreground font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:shadow-md active:scale-95 flex items-center justify-center ring-ring ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-              style: {
-                minWidth: '54px',
-                padding: '12px 16px',
-                borderRadius: '10px'
+          React.createElement('input', {
+            ref: inputRef,
+            type: 'text',
+            value: input,
+            onChange: (e) => setInput(e.target.value),
+            onKeyPress: (e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
               }
             },
-              React.createElement('svg', {
-                className: 'w-5 h-5',
-                fill: 'none',
-                stroke: 'currentColor',
-                viewBox: '0 0 24 24',
-                strokeWidth: '2.5',
-                strokeLinecap: 'round',
-                strokeLinejoin: 'round'
-              },
-                React.createElement('path', { d: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z' })
-              )
+            placeholder: 'Type your message...',
+            disabled: isLoading || !sessionId || error,
+            className: 'rk-input'
+          }),
+          React.createElement('button', {
+            onClick: sendMessage,
+            disabled: !input.trim() || isTyping || isLoading || !sessionId || error,
+            className: 'rk-button rk-button-primary',
+            style: { minWidth: '54px' }
+          },
+            React.createElement('svg', {
+              width: '18',
+              height: '18',
+              fill: 'none',
+              stroke: 'currentColor',
+              viewBox: '0 0 24 24',
+              strokeWidth: '2',
+              strokeLinecap: 'round',
+              strokeLinejoin: 'round'
+            },
+              React.createElement('path', { d: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z' })
             )
           )
         ),
 
         // Footer
         React.createElement('div', {
-          className: 'border-t border-border px-4 py-3 text-center bg-muted'
+          className: 'rk-footer'
         },
           React.createElement('a', {
             href: 'https://rokovo.io',
             target: '_blank',
             rel: 'noopener noreferrer',
-            className: 'text-muted-foreground text-xs hover:text-foreground transition-colors inline-flex items-center gap-1.5 font-medium',
-            style: { textDecoration: 'none' }
+            className: 'rk-text-muted',
+            style: { textDecoration: 'none', fontSize: '12px', fontWeight: 500, display: 'inline-flex', alignItems: 'center', gap: '6px' }
           },
             'Powered by ',
             React.createElement('span', {
-              className: 'font-semibold text-primary'
+              style: { fontWeight: 600, color: '#18181b' }
             }, 'Rokovo')
           )
         )
@@ -1193,7 +1323,6 @@
     console.log('🚀 Rokovo Widget: Initializing...', config);
 
     await loadDependencies();
-    loadTailwind();
     injectStyles();
 
     await new Promise(resolve => setTimeout(resolve, 300));
